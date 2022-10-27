@@ -19,8 +19,6 @@ python main.py
 
 # Options
 
-## Save raw data to json file
-
 ```
 usage: main.py [-h] [-j FILE]
 
