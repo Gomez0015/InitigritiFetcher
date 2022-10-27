@@ -1,4 +1,4 @@
-import requests, time, json
+import requests, time, json, argparse
 from datetime import datetime
 from bcolors import bcolors
 
@@ -7,25 +7,27 @@ with open('config.json') as json_data_file:
 
 TOKEN = config['TOKEN']
 
-# Name
-# Max Bounty
-# Tier
-# Scope
-# Last Updated
+argparser = argparse.ArgumentParser(description='InitigritiFetcher  -  Fetches all the programs and invites from Intigriti')
+
+argparser.add_argument('-j', '--json', metavar="FILE", type=str, help='Save raw output in a json file', action='store')
+args = argparser.parse_args()
 
 def main():
     print('Getting the list of all the programs/invites')
+
+    total_json = []
 
     invite_json = requests.get("https://api.intigriti.com/core/researcher/invite", headers={"Authorization": "Bearer " + TOKEN}).json()
 
     print("Invites: ")
 
     for invite in invite_json:
+        total_json.append(invite)
         print(f"- {invite['programName']}")
         print(f"- {invite['maxBounty']['value']} {invite['maxBounty']['currency']}")
         print(f"- {datetime.fromtimestamp(invite['programLastUpdatedAt'])}")
         data = requests.get(f"https://api.intigriti.com/core/researcher/program/{invite['companyHandle']}/{invite['programHandle']}", headers={"Authorization": "Bearer " + TOKEN}).json()
-    
+
         for domain in data['domains'][0]['content']:
             tier = ""
 
@@ -52,6 +54,7 @@ def main():
     program_json = requests.get("https://api.intigriti.com/core/researcher/program", headers={"Authorization": "Bearer " + TOKEN}).json()
 
     for program in program_json:
+        total_json.append(program)
         print(f"- {program['name']}")
         print(f"- {program['maxBounty']['value']} {program['maxBounty']['currency']}")
         print(f"- {datetime.fromtimestamp(program['lastUpdatedAt'])}")
@@ -84,6 +87,10 @@ def main():
         print("\n")
 
     print("-"*25)
+
+    if(args.json):
+        with open(args.json, 'w') as outfile:
+            json.dump(total_json, outfile)
 
 if __name__ == '__main__':
     main()
