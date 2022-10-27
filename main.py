@@ -55,7 +55,18 @@ def main():
 
     for program in program_json:
         total_json.append(program)
-        print(f"- {program['name']}")
+
+        status = ""
+
+        match program['status']:
+            case 4:
+                status = bcolors.fail("Suspended")
+            case 3:
+                status = bcolors.ok("Open")
+            case _:
+                status = bcolors.warning("Unknown")
+
+        print(f"- {program['name']} | {status}")
         print(f"- {program['maxBounty']['value']} {program['maxBounty']['currency']}")
         print(f"- {datetime.fromtimestamp(program['lastUpdatedAt'])}")
         
