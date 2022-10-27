@@ -16,3 +16,17 @@ and then you are ready to run!
 ```sh
 python main.py
 ```
+
+# Options
+
+## Save raw data to json file
+
+```
+usage: main.py [-h] [-j FILE]
+
+InitigritiFetcher - Fetches all the programs and invites from Intigriti
+
+options:
+  -h, --help            show this help message and exit
+  -j FILE, --json FILE  Save raw output in a json file
+```
